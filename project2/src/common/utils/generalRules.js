@@ -1,0 +1,15 @@
+import joi from "joi";
+import { Types } from "mongoose";
+
+// some general rules for validation schemas
+export const general_rules = {
+    email: joi.string().email({tlds: { allow: true },minDomainSegments: 2,maxDomainSegments: 2,}),
+    password: joi.string().regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/),
+    cPassword: joi.string().valid(joi.ref("password")),
+    
+    id: joi.string().custom((value, helper) => {
+        const isValid = Types.ObjectId.isValid(value);
+        return isValid ? value : helper.message("invalid id");
+    }),
+
+}
